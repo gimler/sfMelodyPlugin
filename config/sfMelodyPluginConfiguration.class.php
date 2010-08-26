@@ -22,6 +22,9 @@ class sfMelodyPluginConfiguration extends sfPluginConfiguration
    */
   public function initialize()
   {
-    $this->dispatcher->connect('routing.load_configuration', array('sfMelodyRouting', 'listenToRoutingLoadConfigurationEvent'));
+    if (sfConfig::get('app_melody_routes_register', true) && in_array('sfMelody', sfConfig::get('sf_enabled_modules', array())))
+    {
+      $this->dispatcher->connect('routing.load_configuration', array('sfMelodyRouting', 'listenToRoutingLoadConfigurationEvent'));
+    }
   }
 }

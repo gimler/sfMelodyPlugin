@@ -41,6 +41,19 @@ This plugin requires sfDoctrineOAuthPlugin and sfDoctrineGuardPlugin. The propel
 
         $ symfony doctrine:migrate
  
+  * Optionally add the following routing rules to `routing.yml`
+
+        melody_access:
+          url:   /access/:service
+          param: { module: sfMelody, action: access }
+
+    These routes are automatically registered by the plugin if the module `sfMelody`
+    is enabled unless you defined `melody_routes_register` to false
+    in the `app.yml` configuration file:
+
+        all:
+          melody:
+            routes_register: false
 
 ## Melodies ##
 
@@ -64,6 +77,7 @@ Available options in app.yml  :
 
     all:
       melody:
+        routes_register: true         # to disable route registration
         create_user: true             # create a new user if not logged when you connect to a service
         name:
           key:  my_service_key
