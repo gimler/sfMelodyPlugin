@@ -14,11 +14,11 @@ This plugin requires sfDoctrineOAuthPlugin and sfDoctrineGuardPlugin. The propel
 
  * Install
  
-	    $ symfony plugin:install sfMelodyPlugin
+        $ symfony plugin:install sfMelodyPlugin
 	 
  * Clear cache
  
-	    $ symfony cc
+        $ symfony cc
 	  
  * Enable the sfMelody module in settings.yml:
  
@@ -34,7 +34,14 @@ This plugin requires sfDoctrineOAuthPlugin and sfDoctrineGuardPlugin. The propel
         class myUser extends sfMelodyUser
         
  * Rebuild model and db because there is a new model class 'Token'
+
+        $ symfony doctrine:generate-migrations-diff
+
+        $ symfony doctrine:build --all-classes
+
+        $ symfony doctrine:migrate
  
+
 ## Melodies ##
 
 
