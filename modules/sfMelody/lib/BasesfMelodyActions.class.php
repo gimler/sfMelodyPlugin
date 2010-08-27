@@ -24,8 +24,10 @@ class BasesfMelodyActions extends sfActions
       $code = $request->getParameter('code');
     }
 
+    // save final callback for redirect
     $callback = $oauth->getCallback();
-    //for oauth 2 the same redirect_uri
+
+    // for oauth 2 the same redirect_uri
     $oauth->setCallback('@melody_access?service='.$service);
 
     $access_token = $oauth->getAccessToken($code);
@@ -36,7 +38,7 @@ class BasesfMelodyActions extends sfActions
     }
     else
     {
-      //we looking for an existing token
+      // we looking for an existing token
       $old_token = sfMelody::execute('findOneByNameAndIdentifier', array($service, $oauth->getIdentifier()));
 
       if($old_token)
@@ -47,15 +49,19 @@ class BasesfMelodyActions extends sfActions
       }
       else
       {
-        $isset_service_user = !is_null(sfConfig::get('app_melody_'.$service.'_create_user'));
-        $config = sfConfig::get('app_melody_'.$service, array());
-        $service_user = isset($config['create_user'])?$config['create_user']:null;
-        $global_user = sfConfig::get('app_melody_create_user', true);
+        $create_user = sfConfig::get('app_melody_create_user', true);
 
-        if($service_user && $isset_service_user || !$isset_service_user && $global_user)
+        // if provider config has create_user value override global config
+        $config = sfConfig::get('app_melody_'.$service);
+        if (isset($config['create_user']))
+        {
+          $create_user = $config['create_user'];
+        }
+
+        if($create_user)
         {
           $username = sfInflector::classify($service).'_'.$oauth->getIdentifier();
-          //create a new user
+          // create a new user
           $user = new sfGuardUser();
           $user->setUsername($username);
 
@@ -63,7 +69,7 @@ class BasesfMelodyActions extends sfActions
 
           $access_token->setUser($user);
 
-          //logged in the new user
+          // logged in the new user
           $this->getUser()->signin($user, sfConfig::get('app_melody_remember_user', true));
         }
       }
